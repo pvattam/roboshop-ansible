@@ -1,6 +1,6 @@
 - name: Add application user
   ansible.builtin.user:
-    name: {{app_user}}
+    name: "{{app_user}}"
 
 - name: Copy App service file
   ansible.builtin.template:
