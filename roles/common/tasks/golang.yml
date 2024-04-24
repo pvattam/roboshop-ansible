@@ -1,0 +1,38 @@
+- name: Check Golang
+  ansible.builtin.shell: type go
+  ignore_errors: yes
+  register: go_stat
+
+- name: Installing Golang
+  ansible.builtin.dnf:
+    name: golang
+    state: present
+  when: go_stat != 0
+
+- name: Import common role - App Pre-requisites
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app-prereq
+
+- name: Import SystemD
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: systemd
+
+- name: Download python dependencies
+  ansible.builtin.shell: pip3.6 install -r requirements.txt
+  args:
+    chdir: "{{app_dir}}"        #It will go to /app directory and do npm install
+
+- name: Import Schema
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: schema-load
+  when : schema_needed
+
+- name: Import Observability
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: observability
+
+
