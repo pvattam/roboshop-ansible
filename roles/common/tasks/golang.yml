@@ -19,8 +19,8 @@
     name: common
     tasks_from: systemd
 
-- name: Download python dependencies
-  ansible.builtin.shell: pip3.6 install -r requirements.txt
+- name: Download golang dependencies
+  ansible.builtin.shell: go mod init dispatch; go get; go build
   args:
     chdir: "{{app_dir}}"        #It will go to /app directory and do npm install
 
