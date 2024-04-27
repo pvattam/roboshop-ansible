@@ -30,7 +30,7 @@
 - name: Download NodeJs dependencies
   ansible.builtin.shell: npm install
   args:
-    chdir: "{{app_dir}}"        #It will go to /app directory and do npm install
+    chdir: "{{app_dir}}"
 
 - name: Install New Relic NodeJS Library
   ansible.builtin.shell: npm install newrelic --save
