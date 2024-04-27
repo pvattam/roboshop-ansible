@@ -22,11 +22,6 @@
     name: common
     tasks_from: app-prereq
 
-- name: Import SystemD
-  ansible.builtin.import_role:
-    name: common
-    tasks_from: systemd
-
 - name: Download NodeJs dependencies
   ansible.builtin.shell: npm install
   args:
@@ -36,6 +31,11 @@
   ansible.builtin.shell: npm install newrelic --save
   args:
     chdir: "{{app_dir}}"
+
+- name: Import SystemD
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: systemd
 
 - name: Import Schema
   ansible.builtin.import_role:
