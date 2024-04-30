@@ -26,6 +26,9 @@
         name: mysql
         state: installed
 
-    # LOAD SCHEMA TBD
-    #- name: Load schema
-    #  ansible.builtin.shell: msql
+    - name: Load schema
+      ansible.builtin.shell: mysql -h {{DB_HOST}} -u{{DB_USER}} -p{{DB_PASS}} < /app/schema/{{component}}.sql
+      vars:
+        DB_HOST: "{{ lookup('amazon.aws.aws_ssm', '{{env}}.{{project_name}}.shipping.DB_HOST', region='us-east-1' ) }}"
+        DB_USER: "{{ lookup('amazon.aws.aws_ssm', '{{env}}.{{project_name}}.rds.username', region='us-east-1' ) }}"
+        DB_PASS: "{{ lookup('amazon.aws.aws_ssm', '{{env}}.{{project_name}}.rds.password', region='us-east-1' ) }}"
