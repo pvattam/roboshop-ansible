@@ -7,7 +7,7 @@
   ansible.builtin.dnf:
     name: golang
     state: present
-  when: go_stat != 0
+  when: go_stat.rc != 0
 
 - name: Import common role - App Pre-requisites
   ansible.builtin.import_role:
