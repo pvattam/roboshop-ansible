@@ -1,8 +1,8 @@
 groups:
   - name: {{ component }}-{{env}}
     rules:
-      - alert: CPUUsageAlertWarning
-        expr: avg by (instance) (100 - (rate(node_cpu_seconds_total{mode="idle"}[5m]) * 100)) > 70
+      - alert: {{component}}_CPUUsageAlertWarning
+        expr: avg by (instance) (100 - (rate(node_cpu_seconds_total{mode="idle", name="{{env}}-{{project_name}}-{{component}}"}[5m]) * 100)) > 70
         for: 1m
         labels:
           severity: warning
@@ -10,8 +10,8 @@ groups:
           env: {{env}}
         annotations:
           summary: warning | CPU Usage Alert
-      - alert: CPUUsageAlertCritical
-        expr: avg by (instance) (100 - (rate(node_cpu_seconds_total{mode="idle"}[5m]) * 100)) > 90
+      - alert: {{component}}_CPUUsageAlertCritical
+        expr: avg by (instance) (100 - (rate(node_cpu_seconds_total{mode="idle", name="{{env}}-{{project_name}}-{{component}}"}[5m]) * 100)) > 90
         for: 1m
         labels:
           severity: critical
@@ -19,8 +19,8 @@ groups:
           env: {{env}}
         annotations:
           summary: critical | CPU Usage Alert
-      - alert: MemoryUsageAlertCritical
-        expr: ((node_memory_MemFree_bytes + node_memory_Cached_bytes + node_memory_Buffers_bytes) / node_memory_MemTotal_bytes) * 100 > 90
+      - alert: {{component}}_MemoryUsageAlertCritical
+        expr: ((node_memory_MemFree_bytes{name="{{env}}-{{project_name}}-{{component}}"} + node_memory_Cached_bytes{name="{{env}}-{{project_name}}-{{component}}"} + node_memory_Buffers_bytes{name="{{env}}-{{project_name}}-{{component}}"}) / node_memory_MemTotal_bytes{name="{{env}}-{{project_name}}-{{component}}"}) * 100 > 90
         for: 1m
         labels:
           severity: critical
@@ -28,8 +28,8 @@ groups:
           env: {{ env }}
         annotations:
           summary: Critical | CPU Usage Alert
-      - alert: MemoryUsageAlertWarning
-        expr: ((node_memory_MemFree_bytes + node_memory_Cached_bytes + node_memory_Buffers_bytes) / node_memory_MemTotal_bytes) * 100 > 70
+      - alert: {{component}}_MemoryUsageAlertWarning
+        expr: ((node_memory_MemFree_bytes{name="{{env}}-{{project_name}}-{{component}}"}+ node_memory_Cached_bytes{name="{{env}}-{{project_name}}-{{component}}"} + node_memory_Buffers_bytes{name="{{env}}-{{project_name}}-{{component}}"}) / node_memory_MemTotal_bytes{name="{{env}}-{{project_name}}-{{component}}"}) * 100 > 70
         for: 1m
         labels:
           severity: warning
@@ -37,7 +37,7 @@ groups:
           env: {{ env }}
         annotations:
           summary: Warning | CPU Usage Alert
-      - alert: NetworkBWMonitorWaitQueue
+      - alert: {{component}}_NetworkBWMonitorWaitQueue
         expr: rate(node_ethtool_bw_in_allowance_exceeded[1m]) > 0
         for: 3m
         labels:
@@ -46,12 +46,12 @@ groups:
           env: {{ env }}
         annotations:
           summary: Critical | Network Wait Queue High
-      - alert: BackendServiceMonitor
-        expr: node_systemd_unit_state{exported_name="catalogue.service",state="active"} == 0
+      - alert: {{component}}_AppServiceMonitor
+        expr: node_systemd_unit_state{exported_name="{{component}}.service",state="active"} == 0
         for: 1m
         labels:
           severity: critical
           component: {{ component }}
           env: {{ env }}
         annotations:
-          summary: Critical | Backend Nginx Service Down
+          summary: Critical | {{component}} Nginx Service Down
